@@ -3,23 +3,17 @@
 
 from __future__ import absolute_import
 
-import sys
 import os
 import json
-import logging
 import unittest
-try:
-    import cookielib
-except ImportError:
-    from http import cookiejar as cookielib
+
+from http import cookiejar
 
 from ghost import GhostTestCase
 from ghost.ghost import default_user_agent
 
 from app import app
 
-
-PY3 = sys.version > '3'
 
 PORT = 5000
 
@@ -168,8 +162,8 @@ class GhostTest(GhostTestCase):
 
     def test_load_cookies_expire_is_none(self):
         self.session.delete_cookies()
-        jar = cookielib.CookieJar()
-        cookie = cookielib.Cookie(version=0, name='Name', value='1', port=None,
+        jar = cookiejar.CookieJar()
+        cookie = cookiejar.Cookie(version=0, name='Name', value='1', port=None,
                                   port_specified=False,
                                   domain='www.example.com',
                                   domain_specified=False,
@@ -378,10 +372,7 @@ class GhostTest(GhostTestCase):
             'static',
             'foo.tar.gz',
         )
-        if PY3:
-            f = open(file_path, 'r', encoding='latin-1')
-        else:
-            f = open(file_path, 'r')
+        f = open(file_path, 'r')
         foo = f.read(1024)
         f.close()
 
@@ -465,6 +456,7 @@ class GhostTest(GhostTestCase):
         self.assertFalse(
             "%sstatic/blackhat.jpg" % base_url in url_loaded)
         session.exit()
+
 
 if __name__ == '__main__':
     unittest.main()
